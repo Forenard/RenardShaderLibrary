@@ -45,6 +45,10 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
 
 **VRC特化ライブラリ**
 
+- https://github.com/lilxyzw/lilToon (lil)
+- https://github.com/MochiesCode/Mochies-Unity-Shaders (mochie)
+- https://s-ilent.booth.pm/ (silent)
+- https://virtual-boys.booth.pm/ (momoma)
 
 ## Tips
 
