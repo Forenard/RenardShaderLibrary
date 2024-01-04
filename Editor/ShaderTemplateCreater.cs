@@ -14,7 +14,12 @@ namespace RenardShaderLibrary
     /// </summary>
     public class ShaderTemplateCreater : EditorWindow
     {
+        private const string MENU_INFO_PATH = "Assets/Create/Shader/OpenRenardShaderTips";
+        [MenuItem(MENU_INFO_PATH)]
+        private static void OpenRenardShaderTips() => Application.OpenURL("https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/README.md");
+
         private const string MENU_PREFIX = "Assets/Create/Shader/ShaderTemplate/";
+        [MenuItem(MENU_PREFIX + "V2F")]
         [MenuItem(MENU_PREFIX + "V2F_Img")]
         private static void V2F_Img() => CreateShader();
 
