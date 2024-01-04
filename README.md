@@ -6,9 +6,12 @@ RenardのUnityシェーダーライブラリ
 
 ![](https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/Cap1.png)
 
-### Shader Template
+### [Shader Template](https://github.com/Forenard/RenardShaderLibrary/tree/main/Editor/Template)
 
 シェーダーのテンプレート
+
+- V2F_Img
+  - Blit,Unlit等に使えるコンパクトなテンプレート
 
 ### [Shader Tips](https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/README.md)
 
