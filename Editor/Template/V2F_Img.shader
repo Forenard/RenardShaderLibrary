@@ -10,7 +10,6 @@ Shader "ShaderTemplate/V2F_Img"
         Pass
         {
             CGPROGRAM
-            #pragma warning(default: 3206)
             #pragma vertex vert_img
             #pragma fragment frag
             #include "UnityCG.cginc"

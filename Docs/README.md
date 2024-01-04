@@ -75,13 +75,32 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
 
 - https://iquilezles.org/articles/
 
-## Tips
+# Tips
 
-### Buildin Shaderのコードを見る
+## Buildin Shaderのコード
 
 [Unity Archive](https://unity.com/releases/editor/archive)からBuild in shadersをダウンロードできる
 
-### ShaderのAttribute
+## 警告(pragma warning)
+
+- https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-appendix-pre-pragma-warning
+- https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/hlsl-errors-and-warnings
+
+EX)
+```hlsl
+#pragma warning(error : 3206) // WAR_ELT_TRUNCATION
+#pragma warning(disable : 3556) // WAR_INT_DIVIDE_SLOW
+```
+
+これでコンパイラの警告を制御できる  
+はずだが、なんか効果がある時とない時がある なんでだろうね
+
+[HLSL のプラグマディレクティブ - Unity](https://docs.unity3d.com/ja/current/Manual/SL-PragmaDirectives.html)によると
+> Unity は、標準的な HLSL の一部である #pragma ディレクティブが通常のインクルードファイルに含まれている限り、すべてサポートします。これらのディレクティブの詳細については、HLSL のドキュメント [#pragma ディレクティブ](https://docs.microsoft.com/ja-jp/windows/win32/direct3dhlsl/dx-graphics-hlsl-appendix-pre-pragma) を参照してください。
+
+なのでいけるはずなんだけど
+
+## ShaderのAttribute
 
 - https://docs.unity3d.com/ja/2022.3/Manual/SL-Properties.html
 - https://docs.unity3d.com/ja/2022.3/ScriptReference/MaterialPropertyDrawer.html
@@ -89,8 +108,8 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
 EnumはC#で定義したものを使うことが出来る
 ```hlsl
 [Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("Source Blend", Int) = 5
-[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Destination Blend", Int) = 1
-[Enum(UnityEngine.Rendering.BlendOp)] _BlendOp ("Destination Blend", Int) = 0
+[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Destination Blend", Int) = 10
+[Enum(UnityEngine.Rendering.BlendOp)] _BlendOp ("BlendOp", Int) = 0
 [Toggle] _ZWrite ("ZWrite", Int) = 0
 [Enum(UnityEngine.Rendering.CullMode)] _Cull ("CullMode", Int) = 2
 ~~~
@@ -99,3 +118,65 @@ BlendOp [_BlendOp]
 ZWrite [_ZWrite]
 Cull [_Cull]
 ```
+
+## Blend
+
+- https://scrapbox.io/rn-works/Unity_:_ShaderLab_:_Blend%E6%A7%8B%E6%96%87
+- https://docs.unity3d.com/ja/2022.3/Manual/SL-Blend.html
+
+BlendOpはデフォルトでAdd  
+Blend SrcFactor DstFactor  
+**(シェーダーの出力 x SrcFactor)+(背景 x DstFactor)になる**
+
+EX)
+```hlsl
+Blend SrcAlpha One // 加算
+Blend SrcAlpha OneMinusSrcAlpha // アルファブレンド
+```
+
+また最終的なAlphaが書き換わる場合があるので、その場合は`ColorMask RGB`などで適宜対応するとよい  
+加算してるはずなのに黒くなる場合とかね
+
+## GPU InstancingとSPS-I(Single-pass instanced rendering)
+
+- SPS-I
+  - https://github.com/lilxyzw/Shader-MEMO/blob/main/Assets/SPSITest.shader
+  - https://github.com/cnlohr/shadertrixx?tab=readme-ov-file#alert-for-early-2022
+  - https://docs.unity3d.com/Manual/SinglePassInstancing.html
+- GPU Instancing
+  
+
+### GPU Instancing
+- https://light11.hatenadiary.com/entry/2019/09/25/220517
+- https://docs.unity3d.com/ja/2019.4/Manual/GPUInstancing.html
+
+[ドローコール](https://docs.unity3d.com/ja/2022.3/Manual/DrawCallBatching.html)を抑えて描画する仕組み  
+マテリアルにEnable Instancingのチェックマークをつけると有効になる
+
+EX) 詳しくはUnlit.shaderを参照
+```hlsl
+#pragma multi_compile_instancing
+~~~
+// struct appdataに追加
+UNITY_VERTEX_INPUT_INSTANCE_ID
+~~~
+// struct v2fに追加
+UNITY_VERTEX_INPUT_INSTANCE_ID
+~~~
+// インスタンシングをきかせる変数の宣言
+UNITY_INSTANCING_BUFFER_START(Props)
+    UNITY_DEFINE_INSTANCED_PROP(float4, hoge)
+UNITY_INSTANCING_BUFFER_END(Props)
+~~~
+// vert(appdata IN)の先頭に追加
+UNITY_SETUP_INSTANCE_ID(IN);
+UNITY_TRANSFER_INSTANCE_ID(IN, OUT);
+~~~
+// frag(v2f IN)の先頭に追加
+UNITY_SETUP_INSTANCE_ID(IN);
+~~~
+// インスタンシングをきかせた変数の参照
+float4 hoge = UNITY_ACCESS_INSTANCED_PROP(Props, hoge);
+```
+
+Instancingが有効かどうかは`UNITY_INSTANCING_ENABLED`で確認できる

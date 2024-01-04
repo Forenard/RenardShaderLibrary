@@ -3,35 +3,34 @@ Shader "ShaderTemplate/Particle"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" { }
-        
-        [Space(20)]
-        [Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("Source Blend", Int) = 5
-        [Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Destination Blend", Int) = 1
-        [Enum(UnityEngine.Rendering.BlendOp)] _BlendOp ("Destination Blend", Int) = 0
-        [Toggle] _ZWrite ("ZWrite", Int) = 0
-        [Enum(UnityEngine.Rendering.CullMode)] _Cull ("CullMode", Int) = 2
+        [HDR]_Color ("Color", Color) = (1, 1, 1, 1)
     }
     SubShader
     {
         Tags { "RenderType" = "Opaque" "Queue" = "Transparent" "IgnoreProjector" = "True" }
-        Blend [_SrcBlend] [_DstBlend]
-        BlendOp [_BlendOp]
-        ZWrite [_ZWrite]
-        Cull [_Cull]
+        Blend SrcAlpha One // Addtive
+        BlendOp Add
+        ZWrite Off
+        ColorMask RGB
+        Lighting Off
 
         Pass
         {
             CGPROGRAM
-            #pragma warning(default: 3206)
+            #pragma exclude_renderers gles
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile_instancing
             #pragma multi_compile_fog
+            #pragma multi_compile_instancing
+            #pragma instancing_options procedural:vertInstancingSetup
+
             #include "UnityCG.cginc"
+            #include "UnityStandardParticleInstancing.cginc"
 
             struct appdata
             {
                 float4 vertex : POSITION;
+                fixed4 color : COLOR;
                 float2 uv : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -39,6 +38,7 @@ Shader "ShaderTemplate/Particle"
             struct v2f
             {
                 float4 vertex : SV_POSITION;
+                fixed4 color : COLOR;
                 float2 uv : TEXCOORD0;
                 UNITY_FOG_COORDS(1)
                 UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -47,11 +47,14 @@ Shader "ShaderTemplate/Particle"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            float4 _Color;
 
             // インスタンシングをきかせる変数はここに定義する
             UNITY_INSTANCING_BUFFER_START(Props)
             // UNITY_DEFINE_INSTANCED_PROP(float4, hoge)
             UNITY_INSTANCING_BUFFER_END(Props)
+            // インスタンシングをきかせた変数はこの様に参照する
+            // float4 hoge = UNITY_ACCESS_INSTANCED_PROP(Props, hoge);
 
             v2f vert(appdata IN)
             {
@@ -62,7 +65,12 @@ Shader "ShaderTemplate/Particle"
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 
                 OUT.vertex = UnityObjectToClipPos(IN.vertex);
+                OUT.color = IN.color;
                 OUT.uv = TRANSFORM_TEX(IN.uv, _MainTex);
+                #ifdef UNITY_PARTICLE_INSTANCING_ENABLED
+                    vertInstancingColor(OUT.color);
+                    vertInstancingUVs(IN.uv, OUT.uv);
+                #endif
                 UNITY_TRANSFER_FOG(OUT, OUT.vertex);
                 return OUT;
             }
@@ -71,10 +79,10 @@ Shader "ShaderTemplate/Particle"
             {
                 UNITY_SETUP_INSTANCE_ID(IN);
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
-
-                // インスタンシングをきかせた変数はこの様に参照する
-                // float4 hoge = UNITY_ACCESS_INSTANCED_PROP(Props, hoge);
+                
                 float4 col = tex2D(_MainTex, IN.uv);
+                col *= IN.color;
+                col *= _Color;
                 UNITY_APPLY_FOG(IN.fogCoord, col);
                 return col;
             }

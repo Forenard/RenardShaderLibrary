@@ -16,7 +16,12 @@ RenardのUnityシェーダーライブラリ
   - fog
   - gpu instancing
   - SPS-I
-
+- Unlit_Transparent
+  - ↑+BlendOp
+- Particle
+  - fog
+  - gpu instancing
+  - SPS-I
 ### [Shader Tips](https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/README.md)
 
 Shaderに関する知見を纏めたもの　VRC特化

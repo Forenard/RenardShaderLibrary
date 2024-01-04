@@ -1,12 +1,25 @@
-Shader "ShaderTemplate/Unlit"
+Shader "ShaderTemplate/Unlit_Transparent"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "white" { }
+        [HDR]_Color ("Color", Color) = (1, 1, 1, 1)
+        [Space(10)]
+        [Header(Rendering)]
+        [Space(10)]
+        [Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("Source Blend", Int) = 5
+        [Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Destination Blend", Int) = 10
+        [Enum(UnityEngine.Rendering.BlendOp)] _BlendOp ("BlendOp", Int) = 0
+        [Toggle] _ZWrite ("ZWrite", Int) = 0
+        [Enum(UnityEngine.Rendering.CullMode)] _Cull ("CullMode", Int) = 2
     }
     SubShader
     {
-        Tags { "RenderType" = "Opaque" }
+        Tags { "RenderType" = "Opaque" "Queue" = "Transparent" }
+        Blend [_SrcBlend] [_DstBlend]
+        BlendOp [_BlendOp]
+        ZWrite [_ZWrite]
+        Cull [_Cull]
 
         Pass
         {
@@ -34,10 +47,9 @@ Shader "ShaderTemplate/Unlit"
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
-            const float hoge = 1.0;
-
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            float4 _Color;
 
             // インスタンシングをきかせる変数はここに定義する
             UNITY_INSTANCING_BUFFER_START(Props)
@@ -59,13 +71,14 @@ Shader "ShaderTemplate/Unlit"
                 UNITY_TRANSFER_FOG(OUT, OUT.vertex);
                 return OUT;
             }
-            
+
             float4 frag(v2f IN) : SV_Target
             {
                 UNITY_SETUP_INSTANCE_ID(IN);
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
                 
                 float4 col = tex2D(_MainTex, IN.uv);
+                col *= _Color;
                 UNITY_APPLY_FOG(IN.fogCoord, col);
                 return col;
             }
