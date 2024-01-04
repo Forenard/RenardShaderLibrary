@@ -33,6 +33,7 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
   - https://tips.orels.sh/
   - https://github.com/frostbone25/Unity-Shader-Templates
   - https://scrapbox.io/unity-yatteiku/
+  - https://rakurai5.fanbox.cc/
   - https://github.com/huwahuwa2017/huwahuwa-memo/tree/main
   - https://phi16.hatenablog.com/archive/category/%E5%88%B6%E4%BD%9C%E8%A7%A3%E8%AA%AC
 - 古め
@@ -43,12 +44,32 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
 
 - https://iquilezles.org/articles/
 
-**VRC特化ライブラリ**
+**VRC特化シェーダー生産者**
 
+- https://lox9973.com/gitlab/ (lox9973)
+  - https://lox9973.booth.pm/
 - https://github.com/lilxyzw/lilToon (lil)
 - https://github.com/MochiesCode/Mochies-Unity-Shaders (mochie)
 - https://s-ilent.booth.pm/ (silent)
+- https://github.com/cnlohr (cnlohr)
+- https://github.com/frostbone25 (David Matos)
+- https://github.com/pema99 (pema)
+- https://github.com/orels1/orels-Unity-Shaders (orels)
+- https://github.com/MerlinVR (merlin)
+- https://github.com/SCRN-VRC (scrn)
+- https://github.com/PiMaker (pi)
+- https://github.com/d4rkc0d3r (d4rkpl4y3r)
+- https://lyuma.booth.pm/ (lyuma)
+  - https://github.com/lyuma/LyumaShader
+- https://github.com/shivaduke28/kanikama (shivaduke)
+  - https://shivaduke28.booth.pm/
 - https://virtual-boys.booth.pm/ (momoma)
+- https://suzufactory.booth.pm/ (suzuki_ith)
+- https://rakuraiworks.booth.pm/ (rakurai)
+- https://noriben.booth.pm/ (noriben)
+- https://ayanotft.booth.pm/ (ayano)
+- https://uniunishop.booth.pm/ (uniuni)
+- https://reflex.booth.pm/ (reflex)
 
 ## Tips
 
