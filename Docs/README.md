@@ -1,6 +1,6 @@
 # Shader Tips
 
-
+VRC特化
 
 ## 重要
 
@@ -25,7 +25,7 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
 
 ## Links
 
-**VRC特化知見**
+**知見**
 
 - 新しめ
   - https://github.com/cnlohr/shadertrixx
@@ -37,14 +37,11 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
   - https://github.com/huwahuwa2017/huwahuwa-memo/tree/main
   - https://phi16.hatenablog.com/archive/category/%E5%88%B6%E4%BD%9C%E8%A7%A3%E8%AA%AC
 - 古め
+  - https://qiita.com/konchannyan
   - https://kurotorimkdocs.gitlab.io/kurotorimemo/
   - https://vrcworld.wiki.fc2.com/wiki/Shader%E9%96%A2%E9%80%A3
 
-**その他知見**
-
-- https://iquilezles.org/articles/
-
-**VRC特化シェーダー生産者**
+**シェーダーライブラリ生産者**
 
 - https://lox9973.com/gitlab/ (lox9973)
   - https://lox9973.booth.pm/
@@ -61,6 +58,7 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
 - https://github.com/d4rkc0d3r (d4rkpl4y3r)
 - https://lyuma.booth.pm/ (lyuma)
   - https://github.com/lyuma/LyumaShader
+- https://github.com/phi16 (phi16)
 - https://github.com/shivaduke28/kanikama (shivaduke)
   - https://shivaduke28.booth.pm/
 - https://virtual-boys.booth.pm/ (momoma)
@@ -70,6 +68,10 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
 - https://ayanotft.booth.pm/ (ayano)
 - https://uniunishop.booth.pm/ (uniuni)
 - https://reflex.booth.pm/ (reflex)
+
+**その他知見**
+
+- https://iquilezles.org/articles/
 
 ## Tips
 

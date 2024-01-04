@@ -13,4 +13,4 @@ RenardのUnityシェーダーライブラリ
 
 ### [Shader Tips](https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/README.md)
 
-Shaderに関する知見を纏めたもの
+Shaderに関する知見を纏めたもの　VRC特化
