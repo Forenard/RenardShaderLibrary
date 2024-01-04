@@ -8,8 +8,6 @@ RenardのUnityシェーダーライブラリ
 
 ### [Shader Template](https://github.com/Forenard/RenardShaderLibrary/tree/main/Editor/Template)
 
-シェーダーのテンプレート
-
 - V2F_Img
   - Blit,Unlit等に使えるコンパクトなテンプレート
 

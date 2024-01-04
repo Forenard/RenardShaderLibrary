@@ -2,7 +2,7 @@
 
 
 
-**重要**
+## 重要
 
 VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/packages/tools/utilities/shaderlabvscode-94653)を使用することを強く推奨します  
 これを使うと
@@ -14,7 +14,7 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
 
 が出来ます。定義への移動が無いとUnityのシェーダーなんて書いてられません
 
-**分からないときは？**
+## 分からないときは？
 
 1. `Unity Shader hogehoge`で検索
    - その概念を指す単語が判明したら、再度検索
