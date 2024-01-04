@@ -4,3 +4,4 @@ My Shader library in Unity
 
 ## Shader Tips
 
+[README](https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/README.md)
