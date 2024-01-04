@@ -9,7 +9,13 @@ RenardのUnityシェーダーライブラリ
 ### [Shader Template](https://github.com/Forenard/RenardShaderLibrary/tree/main/Editor/Template)
 
 - V2F_Img
-  - Blit,Unlit等に使えるコンパクトなテンプレート
+  - Blit等に使える最小構成
+- Nothing
+  - 何もしないシェーダー　GrabPass起動などに使える
+- Unlit
+  - fog
+  - gpu instancing
+  - SPS-I
 
 ### [Shader Tips](https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/README.md)
 

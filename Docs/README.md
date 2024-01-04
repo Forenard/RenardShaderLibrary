@@ -32,6 +32,7 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
   - https://github.com/pema99/shader-knowledge
   - https://tips.orels.sh/
   - https://github.com/frostbone25/Unity-Shader-Templates
+  - https://github.com/netri/Neitri-Unity-Shaders/tree/master
   - https://scrapbox.io/unity-yatteiku/
   - https://rakurai5.fanbox.cc/
   - https://github.com/huwahuwa2017/huwahuwa-memo/tree/main
@@ -41,7 +42,7 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
   - https://kurotorimkdocs.gitlab.io/kurotorimemo/
   - https://vrcworld.wiki.fc2.com/wiki/Shader%E9%96%A2%E9%80%A3
 
-**シェーダーライブラリ生産者**
+**ライブラリ/生産者**
 
 - https://lox9973.com/gitlab/ (lox9973)
   - https://lox9973.booth.pm/
@@ -58,6 +59,7 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
 - https://github.com/d4rkc0d3r (d4rkpl4y3r)
 - https://lyuma.booth.pm/ (lyuma)
   - https://github.com/lyuma/LyumaShader
+- https://github.com/cutesthypnotist (cutesthypnotist)
 - https://github.com/phi16 (phi16)
 - https://github.com/shivaduke28/kanikama (shivaduke)
   - https://shivaduke28.booth.pm/
@@ -75,3 +77,25 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
 
 ## Tips
 
+### Buildin Shaderのコードを見る
+
+[Unity Archive](https://unity.com/releases/editor/archive)からBuild in shadersをダウンロードできる
+
+### ShaderのAttribute
+
+- https://docs.unity3d.com/ja/2022.3/Manual/SL-Properties.html
+- https://docs.unity3d.com/ja/2022.3/ScriptReference/MaterialPropertyDrawer.html
+
+EnumはC#で定義したものを使うことが出来る
+```hlsl
+[Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("Source Blend", Int) = 5
+[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Destination Blend", Int) = 1
+[Enum(UnityEngine.Rendering.BlendOp)] _BlendOp ("Destination Blend", Int) = 0
+[Toggle] _ZWrite ("ZWrite", Int) = 0
+[Enum(UnityEngine.Rendering.CullMode)] _Cull ("CullMode", Int) = 2
+~~~
+Blend [_SrcBlend] [_DstBlend]
+BlendOp [_BlendOp]
+ZWrite [_ZWrite]
+Cull [_Cull]
+```
