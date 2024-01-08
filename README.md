@@ -3,6 +3,10 @@
 
 RenardのUnityシェーダーライブラリ
 
+- 責任無し
+- 信頼性無し
+- 転載しないで
+
 ## Contents
 
 ![](https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/Cap1.png)

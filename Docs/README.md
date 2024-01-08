@@ -71,9 +71,6 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
 - https://uniunishop.booth.pm/ (uniuni)
 - https://reflex.booth.pm/ (reflex)
 
-**その他知見**
-
-- https://iquilezles.org/articles/
 
 # Tips
 
