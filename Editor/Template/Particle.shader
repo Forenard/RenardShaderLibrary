@@ -4,11 +4,13 @@ Shader "Template/Particle"
     {
         _MainTex ("Texture", 2D) = "white" { }
         [HDR]_Color ("Color", Color) = (1, 1, 1, 1)
+        [Toggle(_FLIPBOOK_BLENDING)] _FlipbookBlending ("Flipbook Blending", Int) = 0
     }
     SubShader
     {
         Tags { "RenderType" = "Opaque" "Queue" = "Transparent" "IgnoreProjector" = "True" }
-        Blend SrcAlpha One // Addtive
+        // Blend SrcAlpha One // Addtive
+        Blend SrcAlpha OneMinusSrcAlpha // Alpha Blending
         BlendOp Add
         ZWrite Off
         ColorMask RGB
@@ -21,6 +23,8 @@ Shader "Template/Particle"
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_fog
+            // Texture Sheet Animation
+            #pragma multi_compile __ _FLIPBOOK_BLENDING
             #pragma multi_compile_instancing
             #pragma instancing_options procedural:vertInstancingSetup
 
@@ -31,7 +35,12 @@ Shader "Template/Particle"
             {
                 float4 vertex : POSITION;
                 fixed4 color : COLOR;
-                float2 uv : TEXCOORD0;
+                #if defined(_FLIPBOOK_BLENDING) && !defined(UNITY_PARTICLE_INSTANCING_ENABLED)
+                    float4 uvs : TEXCOORD0;
+                    float blend : TEXCOORD1;
+                #else
+                    float2 uv : TEXCOORD0;
+                #endif
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -40,7 +49,10 @@ Shader "Template/Particle"
                 float4 vertex : SV_POSITION;
                 fixed4 color : COLOR;
                 float2 uv : TEXCOORD0;
-                UNITY_FOG_COORDS(1)
+                #if defined(_FLIPBOOK_BLENDING)
+                    float3 uvAnimBlend : TEXCOORD1;
+                #endif
+                UNITY_FOG_COORDS(2)
                 UNITY_VERTEX_INPUT_INSTANCE_ID
                 UNITY_VERTEX_OUTPUT_STEREO
             };
@@ -65,11 +77,21 @@ Shader "Template/Particle"
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 
                 OUT.vertex = UnityObjectToClipPos(IN.vertex);
-                OUT.color = IN.color;
-                OUT.uv = TRANSFORM_TEX(IN.uv, _MainTex);
-                #ifdef UNITY_PARTICLE_INSTANCING_ENABLED
+                #if defined(UNITY_PARTICLE_INSTANCING_ENABLED)
                     vertInstancingColor(OUT.color);
-                    vertInstancingUVs(IN.uv, OUT.uv);
+                    #if defined(_FLIPBOOK_BLENDING)
+                        vertInstancingUVs(IN.uv, OUT.uv, OUT.uvAnimBlend);
+                    #else
+                        vertInstancingUVs(IN.uv, OUT.uv);
+                    #endif
+                #else
+                    OUT.color = IN.color;
+                    #if defined(_FLIPBOOK_BLENDING)
+                        OUT.uv = TRANSFORM_TEX(IN.uvs.xy, _MainTex);
+                        OUT.uvAnimBlend = float3(TRANSFORM_TEX(IN.uvs.zw, _MainTex), IN.blend);
+                    #else
+                        OUT.uv = TRANSFORM_TEX(IN.uv, _MainTex);
+                    #endif
                 #endif
                 UNITY_TRANSFER_FOG(OUT, OUT.vertex);
                 return OUT;
@@ -79,8 +101,11 @@ Shader "Template/Particle"
             {
                 UNITY_SETUP_INSTANCE_ID(IN);
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
-                
-                float4 col = tex2D(_MainTex, IN.uv);
+                #if defined(_FLIPBOOK_BLENDING)
+                    float4 col = lerp(tex2D(_MainTex, IN.uv), tex2D(_MainTex, IN.uvAnimBlend.xy), IN.uvAnimBlend.z);
+                #else
+                    float4 col = tex2D(_MainTex, IN.uv);
+                #endif
                 col *= IN.color;
                 col *= _Color;
                 UNITY_APPLY_FOG(IN.fogCoord, col);

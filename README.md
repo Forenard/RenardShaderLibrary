@@ -20,10 +20,15 @@ RenardのUnityシェーダーライブラリ
   - ↑+BlendOp
 - Particle
   - fog
-  - gpu instancing
+  - gpu instancing(on/off)
+  - texture sheet animation(flip-book blending)
   - SPS-I
+- Particle_CVS
+  - gpu instancing only
+  - ↑+Custom Vertex Streams
+  - ↑-texture sheet animation
 
-TODO: 
+
 ### [Shader Tips](https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/README.md)
 
 Shaderに関する知見を纏めたもの　VRC特化

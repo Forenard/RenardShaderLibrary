@@ -205,6 +205,22 @@ Depth、GrabPassなどのScreenSpaceなTextureをSampleするときはTEX2DARRAY
   - Custom Vertex StreamsとCustom Dataの使い方
 - https://light11.hatenadiary.com/entry/2020/06/27/194816
   - GPU Instancing対応
+- https://docs.unity3d.com/Manual/PartSysInstancing.html
+  - Particle System GPU Instancing
+- https://booth.pm/ja/items/2737413
+  - Unity Particle SystemのCustom Vertex Streams入門 bt noriben
+- https://light11.hatenadiary.com/entry/2021/11/09/195049
+  - Flip-Book Blendingを使う
 
-具体例はParticle.shaderを参照
+Flip-Book Blending(Texture Sheet Animation)を使う場合も注意  
+対応するにはUnityの記事を見ればいいが、`_TSANIM_BLENDING`は多分`_FLIPBOOK_BLENDING`の間違い  
+あとGPU Instancing Offの場合はblend用のuv2とAnimBlendがデフォで渡ってこないので、自分でCustom Vertex Streamsを設定する必要あり  
+"StandardParticlesShaderGUI"使ってるとこんな感じで直すボタンがある
 
+GPU InstancingのOnOff対応に気を付ける  
+デフォではCustom Vertex Streams+GPU Instancing対応シェーダーはInstancing offにするとおかしくなるので注意  
+対応するにはlight11さんの記事とParticle_CVS.shaderを見ればいい
+
+![](https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/Flip-Book-Particle1.png)
+
+具体例はParticle.shader/Particle_CVS.shaderを参照

@@ -9,7 +9,8 @@ Shader "Template/Particle_CVS"
     SubShader
     {
         Tags { "RenderType" = "Opaque" "Queue" = "Transparent" "IgnoreProjector" = "True" }
-        Blend SrcAlpha One // Addtive
+        // Blend SrcAlpha One // Addtive
+        Blend SrcAlpha OneMinusSrcAlpha // Alpha Blending
         BlendOp Add
         ZWrite Off
         ColorMask RGB
@@ -24,6 +25,15 @@ Shader "Template/Particle_CVS"
             #pragma multi_compile_fog
             #pragma multi_compile_instancing
             #pragma instancing_options procedural:vertInstancingSetup
+
+            #define UNITY_PARTICLE_INSTANCE_DATA_NO_ANIM_FRAME
+            #define UNITY_PARTICLE_INSTANCE_DATA CustomParticleInstanceData
+            struct CustomParticleInstanceData
+            {
+                float3x4 transform;
+                uint color;
+                float3 velocity;
+            };
 
             #include "UnityCG.cginc"
             #include "UnityStandardParticleInstancing.cginc"
@@ -41,7 +51,8 @@ Shader "Template/Particle_CVS"
                 float4 vertex : SV_POSITION;
                 fixed4 color : COLOR;
                 float2 uv : TEXCOORD0;
-                UNITY_FOG_COORDS(1)
+                float3 velocity : TEXCOORD1;
+                UNITY_FOG_COORDS(2)
                 UNITY_VERTEX_INPUT_INSTANCE_ID
                 UNITY_VERTEX_OUTPUT_STEREO
             };
@@ -64,15 +75,18 @@ Shader "Template/Particle_CVS"
                 UNITY_SETUP_INSTANCE_ID(IN);
                 UNITY_TRANSFER_INSTANCE_ID(IN, OUT);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
-
+                
                 OUT.vertex = UnityObjectToClipPos(IN.vertex);
                 OUT.color = IN.color;
                 OUT.uv = TRANSFORM_TEX(IN.uv, _MainTex);
-                #ifdef UNITY_PARTICLE_INSTANCING_ENABLED
+                #if defined(UNITY_PARTICLE_INSTANCING_ENABLED)
                     vertInstancingColor(OUT.color);
                     vertInstancingUVs(IN.uv, OUT.uv);
+                    UNITY_PARTICLE_INSTANCE_DATA data = unity_ParticleInstanceData[unity_InstanceID];
+                    OUT.velocity = data.velocity;
                 #endif
-                // UNITY_TRANSFER_FOG(OUT, OUT.vertex);
+
+                UNITY_TRANSFER_FOG(OUT, OUT.vertex);
                 return OUT;
             }
 
@@ -84,6 +98,7 @@ Shader "Template/Particle_CVS"
                 float4 col = tex2D(_MainTex, IN.uv);
                 col *= IN.color;
                 col *= _Color;
+                col.rgb *= saturate(sign(dot(IN.velocity, float3(0, 1, 0))));
                 UNITY_APPLY_FOG(IN.fogCoord, col);
                 return col;
             }
