@@ -1,4 +1,4 @@
-Shader "ShaderTemplate/V2F_Img"
+Shader "Template/V2F_Img"
 {
     Properties
     {

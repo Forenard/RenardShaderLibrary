@@ -1,4 +1,4 @@
-Shader "ShaderTemplate/Nothing"
+Shader "Template/Nothing"
 {
     SubShader
     {

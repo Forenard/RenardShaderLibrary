@@ -19,9 +19,19 @@ namespace RenardShaderLibrary
         private static void OpenRenardShaderTips() => Application.OpenURL("https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/README.md");
 
         private const string MENU_PREFIX = "Assets/Create/Shader/ShaderTemplate/";
-        [MenuItem(MENU_PREFIX + "V2F")]
+
+        [MenuItem(MENU_PREFIX + "Nothing")]
+        private static void Nothing() => CreateShader();
         [MenuItem(MENU_PREFIX + "V2F_Img")]
         private static void V2F_Img() => CreateShader();
+        [MenuItem(MENU_PREFIX + "Unlit")]
+        private static void Unlit() => CreateShader();
+        [MenuItem(MENU_PREFIX + "Unlit_Transparent")]
+        private static void Unlit_Transparent() => CreateShader();
+        [MenuItem(MENU_PREFIX + "Particle")]
+        private static void Particle() => CreateShader();
+        [MenuItem(MENU_PREFIX + "Particle_CVS")]
+        private static void Particle_CVS() => CreateShader();
 
 
         private static void CreateShader([CallerMemberName] string shaderName = null)

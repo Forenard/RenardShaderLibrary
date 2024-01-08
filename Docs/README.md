@@ -139,13 +139,6 @@ Blend SrcAlpha OneMinusSrcAlpha // アルファブレンド
 
 ## GPU InstancingとSPS-I(Single-pass instanced rendering)
 
-- SPS-I
-  - https://github.com/lilxyzw/Shader-MEMO/blob/main/Assets/SPSITest.shader
-  - https://github.com/cnlohr/shadertrixx?tab=readme-ov-file#alert-for-early-2022
-  - https://docs.unity3d.com/Manual/SinglePassInstancing.html
-- GPU Instancing
-  
-
 ### GPU Instancing
 - https://light11.hatenadiary.com/entry/2019/09/25/220517
 - https://docs.unity3d.com/ja/2019.4/Manual/GPUInstancing.html
@@ -153,7 +146,7 @@ Blend SrcAlpha OneMinusSrcAlpha // アルファブレンド
 [ドローコール](https://docs.unity3d.com/ja/2022.3/Manual/DrawCallBatching.html)を抑えて描画する仕組み  
 マテリアルにEnable Instancingのチェックマークをつけると有効になる
 
-EX) 詳しくはUnlit.shaderを参照
+EX) 具体例はUnlit.shaderを参照
 ```hlsl
 #pragma multi_compile_instancing
 ~~~
@@ -180,3 +173,38 @@ float4 hoge = UNITY_ACCESS_INSTANCED_PROP(Props, hoge);
 ```
 
 Instancingが有効かどうかは`UNITY_INSTANCING_ENABLED`で確認できる
+
+### SPS-I(Single-pass instanced rendering)
+- https://github.com/lilxyzw/Shader-MEMO/blob/main/Assets/SPSITest.shader
+- https://github.com/cnlohr/shadertrixx?tab=readme-ov-file#alert-for-early-2022
+- https://docs.unity3d.com/Manual/SinglePassInstancing.html
+
+GPU Instancingをきかせながら[SinglePassStereoRendering](https://docs.unity3d.com/ja/current/Manual/SinglePassStereoRendering.html)をする仕組み
+
+EX) 簡易的な対応として、GPU Instancingの例に加えて以下のようにする
+```hlsl
+// struct v2fに追加
+UNITY_VERTEX_OUTPUT_STEREO
+~~~
+// vert(appdata IN)の先頭に追加
+UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
+~~~
+// frag(v2f IN)の先頭に追加
+UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
+```
+
+Depth、GrabPassなどのScreenSpaceなTextureをSampleするときはTEX2DARRAYが渡ってくるかもしれないので適宜`UNITY_SAMPLE_SCREENSPACE_TEXTURE`等を用いる必要がある
+
+`unity_StereoEyeIndex`が右目1、左目0で渡ってくるよ～
+
+その他の対応はlilさんのコードやshadertrixxを見てね
+
+## Particle System
+
+- https://light11.hatenadiary.com/entry/2020/06/28/195055
+  - Custom Vertex StreamsとCustom Dataの使い方
+- https://light11.hatenadiary.com/entry/2020/06/27/194816
+  - GPU Instancing対応
+
+具体例はParticle.shaderを参照
+

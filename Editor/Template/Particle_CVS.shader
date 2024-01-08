@@ -1,39 +1,37 @@
-Shader "Template/Unlit_Transparent"
+// Custom Vertex Stream
+Shader "Template/Particle_CVS"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "white" { }
         [HDR]_Color ("Color", Color) = (1, 1, 1, 1)
-        [Space(10)]
-        [Header(Rendering)]
-        [Space(10)]
-        [Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("Source Blend", Int) = 5
-        [Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Destination Blend", Int) = 10
-        [Enum(UnityEngine.Rendering.BlendOp)] _BlendOp ("BlendOp", Int) = 0
-        [Toggle] _ZWrite ("ZWrite", Int) = 0
-        [Enum(UnityEngine.Rendering.CullMode)] _Cull ("CullMode", Int) = 2
     }
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "Queue" = "Transparent" }
-        Blend [_SrcBlend] [_DstBlend]
-        BlendOp [_BlendOp]
-        ZWrite [_ZWrite]
-        Cull [_Cull]
+        Tags { "RenderType" = "Opaque" "Queue" = "Transparent" "IgnoreProjector" = "True" }
+        Blend SrcAlpha One // Addtive
+        BlendOp Add
+        ZWrite Off
+        ColorMask RGB
+        Lighting Off
 
         Pass
         {
             CGPROGRAM
+            #pragma exclude_renderers gles
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_fog
             #pragma multi_compile_instancing
-            
+            #pragma instancing_options procedural:vertInstancingSetup
+
             #include "UnityCG.cginc"
+            #include "UnityStandardParticleInstancing.cginc"
 
             struct appdata
             {
                 float4 vertex : POSITION;
+                fixed4 color : COLOR;
                 float2 uv : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -41,6 +39,7 @@ Shader "Template/Unlit_Transparent"
             struct v2f
             {
                 float4 vertex : SV_POSITION;
+                fixed4 color : COLOR;
                 float2 uv : TEXCOORD0;
                 UNITY_FOG_COORDS(1)
                 UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -67,8 +66,13 @@ Shader "Template/Unlit_Transparent"
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 
                 OUT.vertex = UnityObjectToClipPos(IN.vertex);
+                OUT.color = IN.color;
                 OUT.uv = TRANSFORM_TEX(IN.uv, _MainTex);
-                UNITY_TRANSFER_FOG(OUT, OUT.vertex);
+                #ifdef UNITY_PARTICLE_INSTANCING_ENABLED
+                    vertInstancingColor(OUT.color);
+                    vertInstancingUVs(IN.uv, OUT.uv);
+                #endif
+                // UNITY_TRANSFER_FOG(OUT, OUT.vertex);
                 return OUT;
             }
 
@@ -78,6 +82,7 @@ Shader "Template/Unlit_Transparent"
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
                 
                 float4 col = tex2D(_MainTex, IN.uv);
+                col *= IN.color;
                 col *= _Color;
                 UNITY_APPLY_FOG(IN.fogCoord, col);
                 return col;

@@ -1,4 +1,4 @@
-Shader "ShaderTemplate/Particle"
+Shader "Template/Particle"
 {
     Properties
     {

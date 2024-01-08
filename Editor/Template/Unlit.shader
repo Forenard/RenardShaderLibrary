@@ -1,4 +1,4 @@
-Shader "ShaderTemplate/Unlit"
+Shader "Template/Unlit"
 {
     Properties
     {
@@ -64,7 +64,7 @@ Shader "ShaderTemplate/Unlit"
             {
                 UNITY_SETUP_INSTANCE_ID(IN);
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
-                
+
                 float4 col = tex2D(_MainTex, IN.uv);
                 UNITY_APPLY_FOG(IN.fogCoord, col);
                 return col;
