@@ -4,7 +4,7 @@ VRC特化
 
 ## 重要
 
-VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/packages/tools/utilities/shaderlabvscode-94653)を使用することを強く推奨します  
+VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/packages/tools/utilities/shaderlabvscode-94653)を使用することを強く推奨
 これを使うと
 - シンタックスハイライト
 - 補完
@@ -12,7 +12,7 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
 - ドキュメントのコメント表示
 - **定義への移動**
 
-が出来ます。定義への移動が無いとUnityのシェーダーなんて書いてられません
+が出来る  定義への移動が無いとUnityのシェーダーなんて書いてられない
 
 ## 分からないときは？
 
@@ -105,18 +105,21 @@ EX)
 - https://docs.unity3d.com/ja/2022.3/Manual/SL-Properties.html
 - https://docs.unity3d.com/ja/2022.3/ScriptReference/MaterialPropertyDrawer.html
 
-EnumはC#で定義したものを使うことが出来る
+EnumはC#で定義したものを使うことが出来る 
+Toggleでmulti_compileもできる
 ```hlsl
 [Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("Source Blend", Int) = 5
 [Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Destination Blend", Int) = 10
 [Enum(UnityEngine.Rendering.BlendOp)] _BlendOp ("BlendOp", Int) = 0
 [Toggle] _ZWrite ("ZWrite", Int) = 0
 [Enum(UnityEngine.Rendering.CullMode)] _Cull ("CullMode", Int) = 2
+[Toggle(_HOGEHOGE)] _Hoge ("Hoge", Int) = 0
 ~~~
 Blend [_SrcBlend] [_DstBlend]
 BlendOp [_BlendOp]
 ZWrite [_ZWrite]
 Cull [_Cull]
+#pragma multi_compile __ _HOGEHOGE
 ```
 
 ## Blend
@@ -217,10 +220,10 @@ Flip-Book Blending(Texture Sheet Animation)を使う場合も注意
 あとGPU Instancing Offの場合はblend用のuv2とAnimBlendがデフォで渡ってこないので、自分でCustom Vertex Streamsを設定する必要あり  
 "StandardParticlesShaderGUI"使ってるとこんな感じで直すボタンがある
 
+![](https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/Flip-Book-Particle1.png)
+
 GPU InstancingのOnOff対応に気を付ける  
 デフォではCustom Vertex Streams+GPU Instancing対応シェーダーはInstancing offにするとおかしくなるので注意  
 対応するにはlight11さんの記事とParticle_CVS.shaderを見ればいい
-
-![](https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/Flip-Book-Particle1.png)
 
 具体例はParticle.shader/Particle_CVS.shaderを参照
