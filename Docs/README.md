@@ -224,3 +224,111 @@ GPU InstancingのOnOff対応に気を付ける
 対応するにはlight11さんの記事とParticle_CVS.shaderを見ればいい
 
 具体例はParticle.shader/Particle_CVS.shaderを参照
+
+## FullScreen Shader
+
+### 座標系などについて
+
+コマンドはこんな感じになる
+```
+Cull Off
+ZWrite Off
+ZTest Always
+```
+
+モデルをquadにして、uvが0~1なのを利用してクリップ座標を無理やり作るやり方をよく見る
+
+- https://github.com/cnlohr/shadertrixx?tab=readme-ov-file#fullscreening-a-quad-from-its-uvs
+
+```hlsl
+float4 GetFullScreenCPos(float2 uv)
+{
+  retrun float4(float2(1, -1) * (v.uv * 2 - 1), 0, 1);
+}
+```
+
+からの`ComputeGrabScreenPos(cPos)`からのw除算コンボでScreenSpaceのuv作る
+
+MochieさんはSPS-Iも考慮したやり方をしている(多分)  
+デカいCubeをモデルに使って、`Cull Front`にする
+
+- https://github.com/MochiesCode/Mochies-Unity-Shaders/blob/5349d84458c62b93f5ce26f76d33171719fb623e/Mochie/Common/Utilities.cginc#L309
+
+```hlsl
+float4 GetFullScreenCPos(float4 oPos)
+{
+    oPos.x *= 1.4;
+    #if UNITY_SINGLE_PASS_STEREO || defined(UNITY_STEREO_INSTANCING_ENABLED) || defined(UNITY_STEREO_MULTIVIEW_ENABLED)
+        float ipd = length(mul(unity_WorldToObject,
+        float4(unity_StereoWorldSpaceCameraPos[0].xyz - unity_StereoWorldSpaceCameraPos[1].xyz, 0)));
+        float4 absPos = oPos + float4(ipd * (0.5 - unity_StereoEyeIndex), 0, 0, 0);
+    #else
+        float ipd = 0.0;
+        float4 absPos = oPos;
+    #endif
+    float4 wPos = mul(unity_CameraToWorld, absPos);
+    oPos = mul(unity_WorldToObject, wPos);
+    return UnityObjectToClipPos(oPos);
+}
+```
+
+### ScreenSpaceのTextureを使う
+
+[SPS-Iの章](https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/README.md#gpu-instancing%E3%81%A8sps-isingle-pass-instanced-rendering)でもちょっと触れたが、Depth、GrabPass、ShadowなどのScreenSpaceなTextureはSPS-Iの影響を受けるので、やる
+
+Texture2DArrayとTexture2Dの差異は吸収されてるので分岐は不要
+```hlsl
+#define RENARD_DECLARE_TEX2D(tex)   Texture2D tex; SamplerState sampler##tex
+#define RENARD_DECLARE_TEX2DARRAY(tex)  Texture2DArray tex; SamplerState sampler##tex
+
+#if defined(UNITY_STEREO_INSTANCING_ENABLED) || defined(UNITY_STEREO_MULTIVIEW_ENABLED)
+    #define RENARD_DECLARE_TEX2D_SCREENSPACE(tex)   RENARD_DECLARE_TEX2DARRAY(tex)
+#else
+    #define RENARD_DECLARE_TEX2D_SCREENSPACE(tex)   RENARD_DECLARE_TEX2D(tex)
+#endif
+
+#define RENARD_SAMPLE_TEX2D_SCREENSPACE(tex, coord) tex.SampleLevel(sampler##tex, coord, 0)
+```
+
+## GrabPass
+
+- https://docs.unity3d.com/ja/2022.3/Manual/SL-GrabPass.html
+
+おなじみフレームバッファを取得できる　ポスプロに必須  
+
+書き方でちょっとした違いがあり、多分
+
+- `GrabPass{}` : このコマンドを含むバッチをレンダリングするたび毎回フレームバッファをGrabする
+- `GrabPass{"TextureName"}` : このコマンドを含むバッチの最初だけフレームバッファをGrabする
+
+なのでGrab後にGrabする場合はそれぞれに違う名前をつける必要がある
+
+GrabしたTextureは別のシェーダーからでも取得できたり、次フレームでも保持されたりするので色々使える
+
+FP16のTextureとして情報をpack/unpackしたりもできる(使えるbitは14か15説あり 以下リンク参照)  
+これはAvaterに変なシェーダー仕込むとき、Cameraを使わずにCustomRenderTexture等に情報を送りたくなるので使える
+
+- https://github.com/pema99/shader-knowledge/blob/main/tips-and-tricks.md#encoding-and-decoding-data-in-a-grabpass
+- https://github.com/huwahuwa2017/huwahuwa-memo/blob/main/TexelReadWrite/GrabPassReadWrite15bit.shader
+
+## CustomRenderTexture
+
+- https://docs.unity3d.com/ja/2022.3/Manual/class-CustomRenderTexture.html
+- https://light11.hatenadiary.com/entry/2018/06/12/004133
+
+RenderTextureとMaterial(Shader)が一体化したみたいなやつ  
+VRCWorldではBlitが使えるのであまり使わないが、普通に便利　逆にAvaterのShader芸では必須
+
+CRT同士の依存関係も勝手に解決してパスの実行順序を決めてくれるのが神機能だと思う  
+ループ検出もしてエラーを出してくれる
+
+中身は普通にシェーダーなので、Geometry Shaderを強引に挟んでRandom Accessを実現してComputeShaderみたいに使うこともできる
+- https://github.com/cnlohr/flexcrt
+
+3DのCRTを使うとinterpolationが効いたりして楽だが、使うのは以下の理由からおすすめしない
+- スライス(z)分DrawCallが走る
+  - これは内部的にTexture2DArrayを使ってるからだと思われる
+- 送られてくるz座標がちょっとずれてる(????)
+  - https://x.com/suzuki_ith/status/1570369522523340802?s=20
+  - `tex3Dfetch`とかで確実にやったりしないとだめそう
+  - 私にもこれが発生したが、Unity2022.3.6f1で直ってるか不明

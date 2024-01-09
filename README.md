@@ -32,6 +32,10 @@ RenardのUnityシェーダーライブラリ
   - gpu instancing only
   - ↑+Custom Vertex Streams
   - ↑-texture sheet animation
+- FullScreen
+  - SPS-I
+- CRT_Init
+- CRT_Update
 
 
 ### [Shader Tips](https://github.com/Forenard/RenardShaderLibrary/blob/main/Docs/README.md)
@@ -43,8 +47,8 @@ Shaderに関する知見を纏めたもの　VRC特化
 
 順不同
 
-- [ ] FullScreen Shader
-- [ ] Custom Render Texture Shader
+- [x] FullScreen Shader
+- [x] Custom Render Texture Shader
 - [ ] GPU Particle Billboard Shader
 - [ ] GPU Particle Line Shader
 - [ ] GPU Particle Mesh Shader
@@ -61,3 +65,5 @@ Shaderに関する知見を纏めたもの　VRC特化
 - [ ] Depth/GrabPass/MotionVector等のScreenSpaceなTextureを使うShader
 - [ ] 座標変換まとめ Shader
 - [ ] Noiseまとめ Shader
+
+**VRで見え確認**

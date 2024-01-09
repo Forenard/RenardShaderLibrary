@@ -32,6 +32,12 @@ namespace RenardShaderLibrary
         private static void Particle() => CreateShader();
         [MenuItem(MENU_PREFIX + "Particle_CVS")]
         private static void Particle_CVS() => CreateShader();
+        [MenuItem(MENU_PREFIX + "FullScreen")]
+        private static void FullScreen() => CreateShader();
+        [MenuItem(MENU_PREFIX + "CRT_Init")]
+        private static void CRT_Init() => CreateShader();
+        [MenuItem(MENU_PREFIX + "CRT_Update")]
+        private static void CRT_Update() => CreateShader();
 
 
         private static void CreateShader([CallerMemberName] string shaderName = null)
