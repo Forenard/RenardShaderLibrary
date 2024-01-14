@@ -40,7 +40,10 @@ RenardのUnityシェーダーライブラリ
 - GPU_Particle_Billboard
   - ↑+gpu particle
 - GPU_Particle_Line
-
+- Vertex_Write
+  - 頂点情報をRenderTextureに書き込む
+- Vertex_Read
+  - ↑を読み込む例　GPU_Particle_Lineのfork
 
 ### PointMesh Creater
 

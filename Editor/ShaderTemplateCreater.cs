@@ -47,6 +47,10 @@ namespace RenardShaderLibrary
         private static void GPU_Particle_Billboard() => CreateShader();
         [MenuItem(MENU_PREFIX + "GPU_Particle_Line")]
         private static void GPU_Particle_Line() => CreateShader();
+        [MenuItem(MENU_PREFIX + "Vertex_Write")]
+        private static void Vertex_Write() => CreateShader();
+        [MenuItem(MENU_PREFIX + "Vertex_Read")]
+        private static void Vertex_Read() => CreateShader();
 
         private static void PointMeshCreater()
         {

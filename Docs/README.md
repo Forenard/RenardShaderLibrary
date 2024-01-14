@@ -387,4 +387,35 @@ qvpenも同じ感じでやってると思う感じがする
 
 実例はGPU_Particle_Line.shaderを参照
 
+## 頂点情報をRenderTextureに書き込む
 
+Geometry Shaderでカメラのピクセルの位置にQuadを生成し、色として送る
+
+float4も送れる
+
+```hlsl
+ZWrite Off
+ZTest Always
+Blend One Zero
+```
+
+これで常に色を上書きする
+
+```hlsl
+#define EQ_EPS 0.001
+bool Check()
+{
+    bool isFar = abs(_ProjectionParams.z - _Camera_Far) < EQ_EPS;
+    bool isOrtho = (unity_OrthoParams.w > 0.5);
+    bool isFit = (int(_ScreenParams.x) == _RT_Resolution) && (int(_ScreenParams.y) == _RT_Resolution);
+    return (isFar && isOrtho && isFit);
+}
+```
+
+こんな感じで固有なカメラを識別することができる　Layerで分けてもいい
+
+書きこまないピクセルの色の初期化を書きこむ前にFullScreenShaderでやるといい
+
+錐視台カリングとかも気を付けた方が良い
+
+実例はVertex_Write.shader, Vertex_Read.shaderを参照

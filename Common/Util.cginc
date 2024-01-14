@@ -11,6 +11,8 @@
 
 #define RENARD_SAMPLE_TEX2D_SCREENSPACE(tex, coord) tex.SampleLevel(sampler##tex, coord, 0)
 
+// https://github.com/MochiesCode/Mochies-Unity-Shaders/blob/5349d84458c62b93f5ce26f76d33171719fb623e/Mochie/Common/Utilities.cginc#L309
+// For Cube
 float4 GetFullScreenCPos(float4 oPos)
 {
     oPos.x *= 1.4;
