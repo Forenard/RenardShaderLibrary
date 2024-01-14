@@ -38,7 +38,7 @@ Shader "Template/Particle_CVS"
             #include "UnityCG.cginc"
             #include "UnityStandardParticleInstancing.cginc"
 
-            sampler2D _MainTex;
+            UNITY_DECLARE_TEX2D(_MainTex);
             float4 _MainTex_ST;
             float4 _Color;
 
@@ -88,7 +88,7 @@ Shader "Template/Particle_CVS"
                 UNITY_SETUP_INSTANCE_ID(IN);
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
                 
-                float4 col = tex2D(_MainTex, IN.uv);
+                float4 col = UNITY_SAMPLE_TEX2D(_MainTex, IN.uv);
                 col *= IN.color;
                 col *= _Color;
                 col.rgb *= saturate(sign(dot(IN.velocity, float3(0, 1, 0))));

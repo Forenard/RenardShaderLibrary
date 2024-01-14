@@ -26,3 +26,26 @@ float4 GetFullScreenCPos(float4 oPos)
     oPos = mul(unity_WorldToObject, wPos);
     return UnityObjectToClipPos(oPos);
 }
+
+// https://booth.pm/ja/items/1447794
+// by momoma
+float3x3 GetObjectBillBoardMatrix(bool enableXRot, float3 ocen = float3(0, 0, 0))
+{
+    #if defined(USING_STEREO_MATRICES)
+        float3 cameraPos = (unity_StereoWorldSpaceCameraPos[0] + unity_StereoWorldSpaceCameraPos[1]) * 0.5;
+    #else
+        float3 cameraPos = _WorldSpaceCameraPos;
+    #endif
+
+    float3 direction = mul(unity_WorldToObject, float4(cameraPos, 1)).xyz;
+    direction -= ocen;
+    direction.y = enableXRot ? direction.y : 0;
+    direction = normalize(-direction);
+
+    float3x3 billboardMatrix;
+    billboardMatrix[2] = direction;
+    billboardMatrix[0] = normalize(float3(direction.z, 0, -direction.x));
+    billboardMatrix[1] = normalize(cross(direction, billboardMatrix[0]));
+
+    return transpose(billboardMatrix);
+}

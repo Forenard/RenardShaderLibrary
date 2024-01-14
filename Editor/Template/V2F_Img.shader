@@ -14,11 +14,11 @@ Shader "Template/V2F_Img"
             #pragma fragment frag
             #include "UnityCG.cginc"
             
-            sampler2D _MainTex;
+            UNITY_DECLARE_TEX2D(_MainTex);
 
             float4 frag(v2f_img IN) : SV_Target
             {
-                return tex2D(_MainTex, IN.uv);
+                return UNITY_SAMPLE_TEX2D(_MainTex, IN.uv);
             }
             ENDCG
         }

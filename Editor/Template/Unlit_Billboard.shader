@@ -1,12 +1,13 @@
-Shader "Template/Unlit"
+Shader "Template/Unlit_Billboard"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" { }
+        _MainTex ("Albedo (RGB)", 2D) = "white" { }
+        [ToggleUI] _EnableXRot ("Enable X Rotation", Int) = 1
     }
-    SubShader
+    Subshader
     {
-        Tags { "RenderType" = "Opaque" }
+        Tags { "RenderType" = "Opaque" "Queue" = "Geometry" "DisableBatching" = "True" }
 
         Pass
         {
@@ -15,18 +16,13 @@ Shader "Template/Unlit"
             #pragma fragment frag
             #pragma multi_compile_fog
             #pragma multi_compile_instancing
-            
+
             #include "UnityCG.cginc"
+            #include "Assets/RenardShaderLibrary/Common/Util.cginc"
 
             UNITY_DECLARE_TEX2D(_MainTex);
             float4 _MainTex_ST;
-
-            // インスタンシングをきかせる変数はここに定義する
-            UNITY_INSTANCING_BUFFER_START(Props)
-            // UNITY_DEFINE_INSTANCED_PROP(float4, hoge)
-            UNITY_INSTANCING_BUFFER_END(Props)
-            // インスタンシングをきかせた変数はこの様に参照する
-            // float4 hoge = UNITY_ACCESS_INSTANCED_PROP(Props, hoge);
+            int _EnableXRot;
 
             struct appdata
             {
@@ -52,6 +48,9 @@ Shader "Template/Unlit"
                 UNITY_TRANSFER_INSTANCE_ID(IN, OUT);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 
+                // To BillBoard
+                float3x3 bmat = GetObjectBillBoardMatrix(_EnableXRot);
+                IN.oPos.xyz = mul(bmat, IN.oPos.xyz);
                 OUT.cPos = UnityObjectToClipPos(IN.oPos);
                 OUT.uv = TRANSFORM_TEX(IN.uv, _MainTex);
                 UNITY_TRANSFER_FOG(OUT, OUT.cPos);

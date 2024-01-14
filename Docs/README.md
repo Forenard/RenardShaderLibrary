@@ -37,6 +37,7 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
   - https://rakurai5.fanbox.cc/
   - https://github.com/huwahuwa2017/huwahuwa-memo/tree/main
   - https://phi16.hatenablog.com/archive/category/%E5%88%B6%E4%BD%9C%E8%A7%A3%E8%AA%AC
+  - https://catlikecoding.com/unity/tutorials/rendering/
 - 古め
   - https://qiita.com/konchannyan
   - https://kurotorimkdocs.gitlab.io/kurotorimemo/
@@ -71,6 +72,10 @@ VSCodeを使っている場合、[ShaderlabVSCode](https://assetstore.unity.com/
 - https://uniunishop.booth.pm/ (uniuni)
 - https://reflex.booth.pm/ (reflex)
 
+**その他**
+
+- https://github.com/Frosty704/Billboard
+  - oscで文字送って表示できるavaterギミック
 
 # Tips
 
@@ -332,3 +337,54 @@ CRT同士の依存関係も勝手に解決してパスの実行順序を決め�
   - https://x.com/suzuki_ith/status/1570369522523340802?s=20
   - `tex3Dfetch`とかで確実にやったりしないとだめそう
   - 私にもこれが発生したが、Unity2022.3.6f1で直ってるか不明
+
+## BillBoard
+
+VRだと首の回転(Roll)があるのと、右目左目両方のCameraPosがあるので、それを考慮する必要がある
+
+CameraPosに関しては、右目左目の中心をCameraPosとすればいい
+
+Object空間での回転は以下のようにすればいい
+
+```hlsl
+// https://booth.pm/ja/items/1447794
+// by momoma
+float3x3 GetObjectBillBoardMatrix(bool enableXRot, float3 ocen = float3(0, 0, 0))
+{
+    #if defined(USING_STEREO_MATRICES)
+        float3 cameraPos = (unity_StereoWorldSpaceCameraPos[0] + unity_StereoWorldSpaceCameraPos[1]) * 0.5;
+    #else
+        float3 cameraPos = _WorldSpaceCameraPos;
+    #endif
+
+    float3 direction = mul(unity_WorldToObject, float4(cameraPos, 1)).xyz;
+    direction -= ocen;
+    direction.y = enableXRot ? direction.y : 0;
+    direction = normalize(-direction);
+
+    float3x3 billboardMatrix;
+    billboardMatrix[2] = direction;
+    billboardMatrix[0] = normalize(float3(direction.z, 0, -direction.x));
+    billboardMatrix[1] = normalize(cross(direction, billboardMatrix[0]));
+
+    return transpose(billboardMatrix);
+}
+```
+
+実例はUnlit_Billboard.shader/GPU_Particle_Billboardを参照
+
+## GPU Particle
+
+MeshTopology.PointsのMeshを種にしてGeometry Shaderでよしなにする
+
+実例はGPU_Particle_Hoge.shaderを参照
+
+## Geometry Shaderで線を引く
+
+クリップ座標空間で長方形を作って線を引き、つなぎ目に正方形を追加して円形に切り抜くことでつなぎ目を消す
+
+qvpenも同じ感じでやってると思う感じがする
+
+実例はGPU_Particle_Line.shaderを参照
+
+

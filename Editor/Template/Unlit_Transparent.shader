@@ -31,7 +31,7 @@ Shader "Template/Unlit_Transparent"
             
             #include "UnityCG.cginc"
 
-            sampler2D _MainTex;
+            UNITY_DECLARE_TEX2D(_MainTex);
             float4 _MainTex_ST;
             float4 _Color;
 
@@ -70,7 +70,7 @@ Shader "Template/Unlit_Transparent"
                 UNITY_SETUP_INSTANCE_ID(IN);
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
                 
-                float4 col = tex2D(_MainTex, IN.uv);
+                float4 col = UNITY_SAMPLE_TEX2D(_MainTex, IN.uv);
                 col *= _Color;
                 UNITY_APPLY_FOG(IN.fogCoord, col);
                 return col;

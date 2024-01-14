@@ -31,7 +31,7 @@ Shader "Template/Particle"
             #include "UnityCG.cginc"
             #include "UnityStandardParticleInstancing.cginc"
 
-            sampler2D _MainTex;
+            UNITY_DECLARE_TEX2D(_MainTex);
             float4 _MainTex_ST;
             float4 _Color;
 
@@ -95,9 +95,9 @@ Shader "Template/Particle"
                 UNITY_SETUP_INSTANCE_ID(IN);
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
                 #if defined(_FLIPBOOK_BLENDING)
-                    float4 col = lerp(tex2D(_MainTex, IN.uv), tex2D(_MainTex, IN.uvAnimBlend.xy), IN.uvAnimBlend.z);
+                    float4 col = lerp(UNITY_SAMPLE_TEX2D(_MainTex, IN.uv), UNITY_SAMPLE_TEX2D(_MainTex, IN.uvAnimBlend.xy), IN.uvAnimBlend.z);
                 #else
-                    float4 col = tex2D(_MainTex, IN.uv);
+                    float4 col = UNITY_SAMPLE_TEX2D(_MainTex, IN.uv);
                 #endif
                 col *= IN.color;
                 col *= _Color;
