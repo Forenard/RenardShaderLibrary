@@ -55,21 +55,21 @@ Shaderに関する知見を纏めたもの　VRC特化
 
 ## TODO
 
-順不同
+上から
 
 - [x] FullScreen Shader
 - [x] Custom Render Texture Shader
 - [x] Unlit Billboard Shader
 - [x] GPU Particle Billboard Shader
 - [x] GPU Particle Line Shader
-- [ ] Vertex Read/Write Shader
-- [ ] Raymarching Shader
-- [ ] Voronoi Tracking Shader
-- [ ] Super Cool Simulation Shader (Fluid, Cloth, Softbody, Collision, etc...)
+- [x] Vertex Read/Write Shader
 - [ ] Custom TMPro Shader
 - [ ] MonoSpace Font MSDF Shader
   - [ ] ASCII Only
   - [ ] 日本語も含む
+- [ ] Voronoi Tracking Shader
+- [ ] Raymarching Shader
+- [ ] Super Cool Simulation Shader (Fluid, Cloth, Softbody, Collision, etc...)
 - [ ] PBR Shader + Vertex Offset / Geometry / Tessellation / or something
   - [ ] ASE/Standard/Surface Shader改変等のTips纏める
 - [ ] Depth/GrabPass/MotionVector等のScreenSpaceなTextureを使うShader
