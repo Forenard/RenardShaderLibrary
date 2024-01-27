@@ -419,3 +419,25 @@ bool Check()
 錐視台カリングとかも気を付けた方が良い
 
 実例はVertex_Write.shader, Vertex_Read.shaderを参照
+
+## 文字描画について
+
+Unityには二通りの文字描画方法がある
+
+- TextMesh Pro
+  - https://docs.unity3d.com/Packages/com.unity.textmeshpro@3.0/api/TMPro.html
+  - https://docs.unity3d.com/ja/2022.2/Manual/UIE-font-asset.html
+- UI.Text
+  - https://docs.unity3d.com/ja/2019.2/ScriptReference/UI.Text.html
+  - 2019.2以降ページが消えてる事から何かを察することが出来る
+
+TMProではSDF Fontを扱うことができ、テクスチャにパッキングすることが出来る(静的フォントアセット)
+
+パッキングはめちゃめちゃに敷き詰めるので、テクスチャとは別に文字に対応した情報[(ラインメトリクス)](https://docs.unity3d.com/ja/2022.2/Manual/UIE-font-asset-properties.html)やフォントのプロパティを持つアセットが生成される　弄りたいときはこれを見る必要あり
+
+しかしシングルチャネルのSDFしか扱えないので、MSDFを使いたい場合はこれを入れる　絶対MSDFの方が良い
+
+- https://github.com/MerlinVR/Unity-MSDF-Fonts
+
+MSDFはテクスチャにパッキングする必要がないので、静的フォントアセットは生成されない
+

@@ -63,7 +63,7 @@ Shaderに関する知見を纏めたもの　VRC特化
 - [x] GPU Particle Billboard Shader
 - [x] GPU Particle Line Shader
 - [x] Vertex Read/Write Shader
-- [ ] Custom TMPro Shader
+- [ ] Custom TMPro MSDF Shader
 - [ ] MonoSpace Font MSDF Shader
   - [ ] ASCII Only
   - [ ] 日本語も含む
