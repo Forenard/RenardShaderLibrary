@@ -61,10 +61,14 @@ namespace RenardShaderLibrary
         }
         private static void CreateShader([CallerMemberName] string shaderName = null)
         {
-            string path = $"{GetThisScriptPath()}\\Template\\{shaderName}.shader";
-            string file = ReadFile(path);
+            string thispath = GetThisScriptPath();
+            string path = $"{thispath}\\Template\\{shaderName}.shader";
             string folder = GetProjectWindowFolder();
             string newpath = $"{folder}\\{shaderName}.shader";
+            string file = ReadFile(path);
+            // rewrite path
+            string thisparentpath = thispath.Replace("/Editor", "");
+            file = file.Replace("Assets/RenardShaderLibrary/", thisparentpath);
             WriteFile(newpath, file);
             AssetDatabase.ImportAsset(newpath);
             var created = AssetDatabase.LoadAssetAtPath(newpath, typeof(UnityEngine.Object));
