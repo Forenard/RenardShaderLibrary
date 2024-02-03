@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -9,6 +10,7 @@ using System.IO;
 
 namespace RenardShaderLibrary
 {
+    using static RSLUtils;
     /// <summary>
     /// シェーダーテンプレートを作成するエディタ拡張
     /// </summary>
@@ -59,84 +61,22 @@ namespace RenardShaderLibrary
         }
         private static void CreateShader([CallerMemberName] string shaderName = null)
         {
-            // このライブラリを置いている場所に依存してるよ～～～～
-            string path = Application.dataPath + $"/RenardShaderLibrary/Editor/Template/{shaderName}.shader";
+            string path = $"{GetThisScriptPath()}\\Template\\{shaderName}.shader";
             string file = ReadFile(path);
             string folder = GetProjectWindowFolder();
-            string newpath = $"{folder}/{shaderName}.shader";
+            string newpath = $"{folder}\\{shaderName}.shader";
             WriteFile(newpath, file);
             AssetDatabase.ImportAsset(newpath);
             var created = AssetDatabase.LoadAssetAtPath(newpath, typeof(UnityEngine.Object));
             Selection.SetActiveObjectWithContext(created, null);
         }
-        private static string ReadFile(string path)
+        private static string GetThisScriptPath()
         {
-            var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            var sr = new StreamReader(fs);
-            string file = sr.ReadToEnd();
-            sr.Close();
-            fs.Close();
-            return file;
-        }
-        private static void WriteFile(string path, string file)
-        {
-            var fs = new FileStream(path, FileMode.CreateNew, FileAccess.Write);
-            var sw = new StreamWriter(fs);
-            sw.Write(file);
-            sw.Close();
-            fs.Close();
-        }
-        // https://gist.github.com/allanolivei/9260107?permalink_comment_id=4232189#gistcomment-4232189
-        private static string GetProjectWindowFolder()
-        {
-            string projectPath = new DirectoryInfo(Application.dataPath).Parent.FullName;
-            string objectProjectPath = AssetDatabase.GetAssetPath(Selection.activeObject);
-            string objectAbsolutePath = string.IsNullOrEmpty(objectProjectPath) ? Application.dataPath : $"{projectPath}/{objectProjectPath}";
-            string objectCorrectAbsolutePath = objectAbsolutePath.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
-            string folderAbsolutePath = File.Exists(objectCorrectAbsolutePath) ? Path.GetDirectoryName(objectCorrectAbsolutePath) : objectCorrectAbsolutePath;
-            return Path.GetRelativePath(projectPath, folderAbsolutePath);
-        }
-    }
-
-    public class PointMeshCreaterWindow : EditorWindow
-    {
-        private int pointCount = 10000;
-        private void OnGUI()
-        {
-            GUILayout.Label("PointMeshCreater");
-            pointCount = EditorGUILayout.IntField("Point Count", pointCount);
-            if (GUILayout.Button("Create"))
-            {
-                Create();
-            }
-        }
-
-        private void Create()
-        {
-            var mesh = new Mesh();
-            var vertices = new Vector3[pointCount];
-            var indices = new int[pointCount];
-            for (int i = 0; i < pointCount; i++)
-            {
-                vertices[i] = Vector3.zero;
-                indices[i] = i;
-            }
-            mesh.vertices = vertices;
-            mesh.SetIndices(indices, MeshTopology.Points, 0);
-            mesh.bounds = new Bounds(Vector3.zero, Vector3.one * 1000);
-            string path = GetProjectWindowFolder();
-            AssetDatabase.CreateAsset(mesh, $"{path}/Point_{pointCount}.asset");
-            AssetDatabase.SaveAssets();
-        }
-
-        private static string GetProjectWindowFolder()
-        {
-            string projectPath = new DirectoryInfo(Application.dataPath).Parent.FullName;
-            string objectProjectPath = AssetDatabase.GetAssetPath(Selection.activeObject);
-            string objectAbsolutePath = string.IsNullOrEmpty(objectProjectPath) ? Application.dataPath : $"{projectPath}/{objectProjectPath}";
-            string objectCorrectAbsolutePath = objectAbsolutePath.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
-            string folderAbsolutePath = File.Exists(objectCorrectAbsolutePath) ? Path.GetDirectoryName(objectCorrectAbsolutePath) : objectCorrectAbsolutePath;
-            return Path.GetRelativePath(projectPath, folderAbsolutePath);
+            System.Type scriptType = typeof(ShaderTemplateCreater);
+            MonoScript monoScript = MonoScript.FromScriptableObject(ScriptableObject.CreateInstance(scriptType));
+            string scriptPath = AssetDatabase.GetAssetPath(monoScript);
+            return scriptPath.Replace("ShaderTemplateCreater.cs", "");
         }
     }
 }
+#endif
