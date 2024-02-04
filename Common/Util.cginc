@@ -51,3 +51,11 @@ float3x3 GetObjectBillBoardMatrix(bool enableXRot, float3 ocen = float3(0, 0, 0)
 
     return transpose(billboardMatrix);
 }
+
+#define fract(x) ((x) - floor(x))
+#define mod(x, y) ((x) - (y) * floor((x) / (y)))
+#define mix(x, y, a) lerp(x, y, a)
+#define linearstep(edge0, edge1, x) saturate(((x) - (edge0)) / ((edge1) - (edge0)))
+#define remap(x, a, b, c, d) lerp(c, d, ((x) - (a)) / ((b) - (a)))
+#define remapc(x, a, b, c, d) lerp(c, d, linearstep(a, b, x))
+#define repeat(x, a, b) (mod(x, (b) - (a)) + (a))
