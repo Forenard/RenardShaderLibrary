@@ -52,6 +52,9 @@ float3x3 GetObjectBillBoardMatrix(bool enableXRot, float3 ocen = float3(0, 0, 0)
     return transpose(billboardMatrix);
 }
 
+#define PI UNITY_PI
+#define TAU UNITY_TWO_PI
+
 #define fract(x) ((x) - floor(x))
 #define mod(x, y) ((x) - (y) * floor((x) / (y)))
 #define mix(x, y, a) lerp(x, y, a)
