@@ -62,3 +62,8 @@ float3x3 GetObjectBillBoardMatrix(bool enableXRot, float3 ocen = float3(0, 0, 0)
 #define remap(x, a, b, c, d) lerp(c, d, ((x) - (a)) / ((b) - (a)))
 #define remapc(x, a, b, c, d) lerp(c, d, linearstep(a, b, x))
 #define repeat(x, a, b) (mod(x, (b) - (a)) + (a))
+
+float2 orbit(float a)
+{
+    return float2(cos(a), sin(a));
+}

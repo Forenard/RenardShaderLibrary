@@ -130,5 +130,5 @@ float snoise(float3 p)
     w *= w;
     d *= w;
 
-    return dot(d, (float4) (52.0));
+    return clamp(dot(d, (float4) (52.0)), -1, 1);
 }
