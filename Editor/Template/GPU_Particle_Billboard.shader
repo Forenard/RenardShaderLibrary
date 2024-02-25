@@ -20,7 +20,7 @@ Shader "Template/GPU_Particle_Billboard"
             #pragma multi_compile_instancing
 
             #include "UnityCG.cginc"
-            #include "Assets/RenardShaderLibrary/Common/Util.cginc"
+            #include "../../Common/Util.cginc"
 
             UNITY_DECLARE_TEX2D(_MainTex);
             float4 _MainTex_ST;

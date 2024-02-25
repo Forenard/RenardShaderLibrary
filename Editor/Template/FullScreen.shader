@@ -22,7 +22,7 @@ Shader "Template/FullScreen"
             #pragma fragment frag
             
             #include "UnityCG.cginc"
-            #include "Assets/RenardShaderLibrary/Common/Util.cginc"
+            #include "../../Common/Util.cginc"
 
             RENARD_DECLARE_TEX2D_SCREENSPACE(_FullSceenGrabTexture);
             float _Monochrome;

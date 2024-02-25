@@ -24,6 +24,10 @@ namespace RenardShaderLibrary
         [MenuItem(MENU_POINT_MESH_PREFIX)]
         private static void OpenPointMeshCreater() => PointMeshCreater();
 
+        private const string MENU_MSDF_GENERATOR_PREFIX = "Assets/Create/Shader/MSDFGenerator";
+        [MenuItem(MENU_MSDF_GENERATOR_PREFIX)]
+        private static void OpenMSDFGenerator() => MSDFGenerator();
+
         private const string MENU_PREFIX = "Assets/Create/Shader/ShaderTemplate/";
         [MenuItem(MENU_PREFIX + "Nothing")]
         private static void Nothing() => CreateShader();
@@ -59,6 +63,11 @@ namespace RenardShaderLibrary
             var window = GetWindow<PointMeshCreaterWindow>("PointMeshCreater");
             window.Show();
         }
+        private static void MSDFGenerator()
+        {
+            var window = GetWindow<MSDFGeneratorWindow>("MSDFGenerator");
+            window.Show();
+        }
         private static void CreateShader([CallerMemberName] string shaderName = null)
         {
             string thispath = GetThisScriptPath();
@@ -68,7 +77,7 @@ namespace RenardShaderLibrary
             string file = ReadFile(path);
             // rewrite path
             string thisparentpath = thispath.Replace("/Editor", "");
-            file = file.Replace("Assets/RenardShaderLibrary/", thisparentpath);
+            file = file.Replace("../../", thisparentpath);
             WriteFile(newpath, file);
             AssetDatabase.ImportAsset(newpath);
             var created = AssetDatabase.LoadAssetAtPath(newpath, typeof(UnityEngine.Object));

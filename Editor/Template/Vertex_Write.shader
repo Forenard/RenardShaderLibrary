@@ -22,7 +22,7 @@ Shader "Template/Vertex_Write"
             #pragma multi_compile_instancing
 
             #include "UnityCG.cginc"
-            #include "Assets/RenardShaderLibrary/Common/Util.cginc"
+            #include "../../Common/Util.cginc"
             int _RT_Resolution;
             float _Camera_Far;
             #define EQ_EPS 0.001

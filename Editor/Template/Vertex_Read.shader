@@ -29,7 +29,7 @@ Shader "Template/Vertex_Read"
             #pragma multi_compile_instancing
 
             #include "UnityCG.cginc"
-            #include "Assets/RenardShaderLibrary/Common/Util.cginc"
+            #include "../../Common/Util.cginc"
 
             float _Size;
             float _SmoothPixel;
