@@ -2,14 +2,16 @@
 
 #define RENARD_DECLARE_TEX2D(tex)   Texture2D tex; SamplerState sampler##tex
 #define RENARD_DECLARE_TEX2DARRAY(tex)  Texture2DArray tex; SamplerState sampler##tex
+#define RENARD_SAMPLE_TEX2D(tex, coord)     tex.Sample(sampler##tex, coord)
+#define RENARD_SAMPLE_TEX2DARRAY(tex, coord)     tex.Sample(sampler##tex, coord)
 
 #if defined(UNITY_STEREO_INSTANCING_ENABLED) || defined(UNITY_STEREO_MULTIVIEW_ENABLED)
     #define RENARD_DECLARE_TEX2D_SCREENSPACE(tex)   RENARD_DECLARE_TEX2DARRAY(tex)
+    #define RENARD_SAMPLE_TEX2D_SCREENSPACE(tex, coord)    RENARD_SAMPLE_TEX2DARRAY(tex, float3((coord).xy, (float)unity_StereoEyeIndex))
 #else
     #define RENARD_DECLARE_TEX2D_SCREENSPACE(tex)   RENARD_DECLARE_TEX2D(tex)
+    #define RENARD_SAMPLE_TEX2D_SCREENSPACE(tex, coord)    RENARD_SAMPLE_TEX2D(tex, coord)
 #endif
-
-#define RENARD_SAMPLE_TEX2D_SCREENSPACE(tex, coord) tex.SampleLevel(sampler##tex, coord, 0)
 
 // https://github.com/MochiesCode/Mochies-Unity-Shaders/blob/5349d84458c62b93f5ce26f76d33171719fb623e/Mochie/Common/Utilities.cginc#L309
 // For Cube
