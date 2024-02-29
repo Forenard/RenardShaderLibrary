@@ -57,6 +57,8 @@ namespace RenardShaderLibrary
         private static void Vertex_Write() => CreateShader();
         [MenuItem(MENU_PREFIX + "Vertex_Read")]
         private static void Vertex_Read() => CreateShader();
+        [MenuItem(MENU_PREFIX + "Font")]
+        private static void Font() => CreateShader();
 
         private static void PointMeshCreater()
         {
