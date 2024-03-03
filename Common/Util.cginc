@@ -108,3 +108,7 @@ float2 orbit(float a)
 {
     return float2(cos(a), sin(a));
 }
+float3 erot(float3 p, float3 ax, float ro)
+{
+    return mix(dot(ax, p) * ax, p, cos(ro)) + cross(ax, p) * sin(ro);
+}
