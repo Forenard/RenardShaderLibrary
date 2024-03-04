@@ -102,8 +102,12 @@ float4x4 inverse(float4x4 mat)
 #define remap(x, a, b, c, d) lerp(c, d, ((x) - (a)) / ((b) - (a)))
 #define remapc(x, a, b, c, d) lerp(c, d, linearstep(a, b, x))
 #define repeat(x, a, b) (mod(x, (b) - (a)) + (a))
-#define mixema(x, y, dt, lm) lerp(x, y, exp2( - (dt) / max(1e-9, lm)))
+#define mixema(x, y, dt, lm) lerp(x, y, getema(dt, lm))
 
+float getema(float dt, float lm)
+{
+    return exp2(-dt / max(1e-9, lm));
+}
 float2 orbit(float a)
 {
     return float2(cos(a), sin(a));
@@ -111,4 +115,14 @@ float2 orbit(float a)
 float3 erot(float3 p, float3 ax, float ro)
 {
     return mix(dot(ax, p) * ax, p, cos(ro)) + cross(ax, p) * sin(ro);
+}
+float3 cospalette(float3 a, float3 b, float t)
+{
+    return 0.5 - 0.5 * cos(TAU * (a * t + b));
+}
+float2x2 rot(float a)
+{
+    float c = cos(a);
+    float s = sin(a);
+    return float2x2(c, -s, s, c);
 }
