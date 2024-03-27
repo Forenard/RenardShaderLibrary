@@ -106,7 +106,7 @@ float4x4 inverse(float4x4 mat)
 
 float getema(float dt, float lm)
 {
-    return exp2(-dt / max(1e-9, lm));
+    return min(1, max(0, exp2(-dt / max(1e-5, lm))));
 }
 float2 orbit(float a)
 {
